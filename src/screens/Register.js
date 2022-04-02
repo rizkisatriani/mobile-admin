@@ -41,7 +41,7 @@ export class Register extends Component {
     return (
         <View style={[main.container, { backgroundColor: "#00a8ff" }]}>
           <StatusBar barStyle="light-content" backgroundColor="#00a8ff" />
-          <Text style={[{ color: '#fff', fontSize: 24,marginBottom:30 }]} >Register</Text> 
+          <Text style={[{ color: '#fff', fontSize: 24,marginBottom:30,marginTop:50 }]} >Register</Text> 
         <ScrollView> 
           <TextInput
             style={main.inputRounded}

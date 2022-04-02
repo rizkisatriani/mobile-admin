@@ -83,7 +83,8 @@ export class Login extends Component {
          await AsyncStorage.setItem("user",JSON.stringify(res.data.data) )
          this.props.navigation.replace('MenuUtama');  
       }).catch((e) => {
-        Alert.alert("Informasi","Nik dan password yang anda masukan salah.");
+        console.log(e.response.data.message);
+        Alert.alert("Informasi",e.response.data.message);
       })
   }; 
   render() {

@@ -4,7 +4,7 @@ export default StyleSheet.create({
   inputRounded: {
     borderColor: '#C6C6C6',
     backgroundColor: "#ecf0f1",
-    borderRadius: 30,
+    borderRadius: 10,
     borderWidth: 0.5,
     width: width / 1.2,
     margin: 8,

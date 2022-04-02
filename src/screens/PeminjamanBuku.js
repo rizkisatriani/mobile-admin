@@ -21,8 +21,18 @@ export default class PeminjamanBuku extends Component {
     getbuku = async () => {
         axios({
             method: "get",
-            url: BASE_URL + "/api/getBuku",
+            url: BASE_URL + "/api/getMobile",
         }).then(async (res) => {
+            if(res.data.status==1){
+                Alert.alert(
+                    "Informasi",
+                    "Anda sudah melakukan peminjaman silahkan selesaikan peminjaman yang pertama",
+                    [ 
+                      { text: "OK", onPress: () => 
+                      this.props.navigation.navigate('MenuUtama')}
+                    ]
+                  );
+            }
             this.setState({ buku : res.data.data}); 
             this.setState({ originBuku : res.data.data}); 
         }).catch((e) => {

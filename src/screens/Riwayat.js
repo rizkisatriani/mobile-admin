@@ -21,7 +21,7 @@ export default class Riwayat extends Component {
     getData = async () => {
         getData('user').then((data) => {
 
-            const URL = `${BASE_URL}/api/getById`;
+            const URL = `${BASE_URL}/api/getHistoryById`;
             let FData = new FormData(); 
             FData.append("nik", data.nik);
             axios.post(URL, FData).then((response) => {

@@ -104,6 +104,9 @@ export class MenuUtama extends Component {
                         justifyContent: 'flex-end',
                         alignItems: 'center',
                         borderRadius: 30
+                    }}
+                    onPress={() => {
+                        this.props.navigation.navigate('Pengembalian');
                     }}>
                         <FontAwesomeIcon icon={faCalendarCheck} color="#34495e" secondaryColor="#95a5a6" size={52} />
                         <Text style={[{
@@ -114,7 +117,7 @@ export class MenuUtama extends Component {
                             fontWeight: 'bold'
                         }]}>Kembalikan Buku</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{
+                    {/* <TouchableOpacity style={{
                         backgroundColor: "#ecf0f1", margin: 10, height: 150, width: width / 2.3,
                         elevation: 3,
                         justifyContent: 'flex-end',
@@ -129,13 +132,13 @@ export class MenuUtama extends Component {
                             fontSize: 12,
                             fontWeight: 'bold'
                         }]}>Perpanjang</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     <TouchableOpacity 
                         onPress={() => {
                             this.props.navigation.navigate('Riwayat');
                         }} 
                             style={{
-                        backgroundColor: "#ecf0f1", margin: 10, height: 150, width: width / 2.3,
+                        backgroundColor: "#ecf0f1", margin: 10, height: 150, width: width -35,
                         elevation: 3,
                         justifyContent: 'flex-end',
                         alignItems: 'center',
