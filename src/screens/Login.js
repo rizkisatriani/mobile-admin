@@ -5,6 +5,8 @@ import DocumentPicker from 'react-native-document-picker';
 import main from '../styles/main'
 import axios from 'axios';
 import { BASE_URL } from  '../constants/http.js';
+import { getData } from '../helpers/storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export class Login extends Component {
   state = {
@@ -59,7 +61,13 @@ export class Login extends Component {
       }
     }
   }
-
+  componentDidMount(){
+    getData('user').then((data) => {
+      if(data){
+        this.props.navigation.replace('MenuUtama'); 
+      }  
+    })
+  }
   login = async() => {  
     axios({
         method: "post",
@@ -71,7 +79,9 @@ export class Login extends Component {
               }
       }).then(async(res)=>{
          console.log(res.data )    
-         this.props.navigation.navigate('MenuUtama');  
+         
+         await AsyncStorage.setItem("user",JSON.stringify(res.data.data) )
+         this.props.navigation.replace('MenuUtama');  
       }).catch((e) => {
         Alert.alert("Informasi","Nik dan password yang anda masukan salah.");
       })
