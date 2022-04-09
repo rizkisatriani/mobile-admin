@@ -75,7 +75,7 @@ export class Login extends Component {
         data: {  
                 "nik":this.state.nik,
                 "password":this.state.pass,
-                "level":1, 
+                "level":2, 
               }
       }).then(async(res)=>{
          console.log(res.data )    

@@ -6,7 +6,7 @@ import { BASE_URL } from '../constants/http.js';
 import { getData } from '../helpers/storage'
 
 const { height, width } = Dimensions.get('window');
-export default class Pengembalian extends Component {
+export default class DetilList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,14 +17,14 @@ export default class Pengembalian extends Component {
         };
     }
     componentDidMount() {
-        this.getbuku();
+        this.getDataPinjam();
     }
-    getbuku = async () => {
-        getData('user').then((data_user) => {
+    getDataPinjam = async () => { 
+        console.log(this.props.route.params.type);
             axios({
                 method: "post",
-                url: BASE_URL + "/api/getById",
-                data: { nik: data_user.nik }
+                url: BASE_URL + "/api/getByIdPinjam",
+                data: { id: this.props.route.params.id }
             }).then(async (res) => {
                 if (res.data.data.length == 0) {
                     Alert.alert(
@@ -45,18 +45,20 @@ export default class Pengembalian extends Component {
             }).catch((e) => {
                 console.log(e);
                 // Alert.alert("Informasi","Nik dan password yang anda masukan salah.");
-            })
-        })
+            }) 
     };
 
-    kembalikan = () => {
-        const URL = `${BASE_URL}/api/Requestpengembalian`;
+    ACC = () => { 
+        getData('user').then((data_user) => {
+        const URL = `${BASE_URL}/api/accMobile`;
         let FData = new FormData();
         FData.append("id", this.state.dataPeminjam.id);
+        FData.append("admin_id", data_user.id);
+        FData.append("type", this.props.route.params.type);
         axios.post(URL, FData).then((response) => {
             Alert.alert(
                 "Informasi",
-                "Pengajuan pengembalian Berhasil.",
+                "Pengajuan telah berhasil di setujui.",
                 [
                     {
                         text: "OK", onPress: () =>
@@ -67,16 +69,20 @@ export default class Pengembalian extends Component {
         }).catch((e) => {
             console.log('sukses', e)
         });
+    })
 
-    }
-    perpanjang = () => {
-        const URL = `${BASE_URL}/api/Requestperpanjang`;
+    } 
+    Tolak = () => { 
+        getData('user').then((data_user) => {
+        const URL = `${BASE_URL}/api/TolakMobile`;
         let FData = new FormData();
         FData.append("id", this.state.dataPeminjam.id);
+        FData.append("admin_id", data_user.id);
+        FData.append("type", this.props.route.params.type);
         axios.post(URL, FData).then((response) => {
             Alert.alert(
                 "Informasi",
-                "Pengajuan pengembalian Berhasil.",
+                "Pengajuan telah berhasil di hapus.",
                 [
                     {
                         text: "OK", onPress: () =>
@@ -87,8 +93,9 @@ export default class Pengembalian extends Component {
         }).catch((e) => {
             console.log('sukses', e)
         });
+    })
 
-    }
+    } 
     delete = (data) => {
         const bukuPinjam = this.state.bukuPinjam;
         bukuPinjam.push(data);
@@ -115,7 +122,7 @@ export default class Pengembalian extends Component {
                     borderBottomLeftRadius: 25,
                     borderBottomRightRadius: 25,
                     width: width,
-                    height: 150,
+                    height: 160,
                     padding: 10,
                 }} >
                     <Text style={[{
@@ -124,7 +131,7 @@ export default class Pengembalian extends Component {
                         padding: 15,
                         fontSize: 24,
                         fontWeight: 'bold'
-                    }]}>Peminjaman</Text>
+                    }]}>Detil Pengajuan</Text>
                     <View style={{
                         flexDirection: 'row',
                         width: width,
@@ -133,7 +140,7 @@ export default class Pengembalian extends Component {
                     }}>
                         <TouchableOpacity
                             onPress={() => {
-                                this.kembalikan()
+                                this.ACC()
                             }}
                             style={{
                                 flex: 2,
@@ -153,11 +160,11 @@ export default class Pengembalian extends Component {
                                 padding: 15,
                                 fontSize: 14,
                                 fontWeight: 'bold'
-                            }]}>Kembalikan</Text>
+                            }]}>Setujui</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                this.perpanjang()
+                                this.Tolak()
                             }}
                             style={{
                                 flex: 1,
@@ -177,7 +184,7 @@ export default class Pengembalian extends Component {
                                 padding: 15,
                                 fontSize: 14,
                                 fontWeight: 'bold'
-                            }]}>Perpanjang</Text>
+                            }]}>Tolak</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -232,23 +239,7 @@ export default class Pengembalian extends Component {
                                         flexWrap: 'wrap'
                                     }}
                                     onPress={() => {
-                                        Alert.alert(
-                                            "Tambahkan buku",
-                                            `Anda akan menambahakan buku ${data.judul} untuk dipinjam`,
-                                            [
-                                                {
-                                                    text: "Iya",
-                                                    onPress: () => {
-                                                        this.delete(data);
-                                                    }
-                                                },
-                                                {
-                                                    text: "Tidak",
-                                                    onPress: () => {
-                                                    }
-                                                }
-                                            ]
-                                        );
+                                      
                                     }}>
                                     <Image
                                         style={main.buku}
