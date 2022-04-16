@@ -34,7 +34,7 @@ export default class Riwayat extends Component {
                 break;
             case 'anggota':
                 URL = `${BASE_URL}/api/requestAnggota`;
-                this.setState({ Judul: 'Permintaan Peminjaman' });
+                this.setState({ Judul: 'Keanggotaan' });
                 break;
             case 'perpanjang':
                 URL = `${BASE_URL}/api/getRequestPerpanjangAdmin`;
@@ -45,7 +45,18 @@ export default class Riwayat extends Component {
                 break;
         }
         axios.get(URL).then((response) => {
-            console.log(response.data.data);
+            if(response.data.data<=0){
+                Alert.alert(
+                    "Informasi",
+                    "Belum ada pengajuan.",
+                    [
+                        {
+                            text: "OK", onPress: () =>
+                                this.props.navigation.navigate('MenuUtama')
+                        }
+                    ]
+                );
+            } 
             this.setState({ data: response.data.data });
         }).catch((e) => {
             console.log(e);
@@ -120,13 +131,31 @@ export default class Riwayat extends Component {
                                         flexWrap: 'wrap'
                                     }}
                                     onPress={() => {
-                                        this.props.navigation.navigate('DetilList', { id: data.id, type: this.props.route.params.type });
+                                        if(this.props.route.params.type=='anggota'){
+                                            this.props.navigation.navigate('DetilListAnggota', { id: data.id, type: this.props.route.params.type });
+                                        }else{
+                                            this.props.navigation.navigate('DetilList', { id: data.id, type: this.props.route.params.type });
+                                        }
                                     }}>
                                     <View style={{
                                         flex: 1,
                                         flexDirection: 'row',
+                                    }}>{this.props.route.params.type=='anggota'? <View style={{
+                                        flex: 1,
+                                        flexDirection: 'column',
+                                        borderBottomLeftRadius: 45,
+                                        borderBottomRightRadius: 45,
+                                        width: width,
+                                        height: height / 3,
+                                        padding: 10,
                                     }}>
-                                        <View style={{
+                                        <Text style={[main.text, { fontSize: 18, fontWeight: 'bold' }]}>No Pendaftaran : {data.id}</Text>
+                                        <Text style={[main.text, { fontSize: 12 }]}>Nik Anggota: {data.nik}</Text>
+                                        <Text style={[main.text, { fontSize: 12 }]}>Nama Anggota : {data.name}</Text>
+                                        <Text style={[main.text, { fontSize: 12 }]}>Email : {data.email}</Text>
+                                        <Text style={[main.text, { fontSize: 12 }]}>No. Hp : {data.no_hp }</Text>
+                                        <Text style={[main.text, { fontSize: 12 }]}>{data.tahun_terbit}</Text>
+                                    </View>: <View style={{
                                             flex: 1,
                                             flexDirection: 'column',
                                             borderBottomLeftRadius: 45,
@@ -136,12 +165,13 @@ export default class Riwayat extends Component {
                                             padding: 10,
                                         }}>
                                             <Text style={[main.text, { fontSize: 18, fontWeight: 'bold' }]}>No Peminjaman : {data.id}</Text>
-                                            <Text style={[main.text, { fontSize: 12 }]}>NIK pinjam : {data.nik}</Text>
-                                            <Text style={[main.text, { fontSize: 12 }]}>Nama pinjam : {data.name}</Text>
+                                            <Text style={[main.text, { fontSize: 12 }]}>NIK peminjam : {data.nik}</Text>
+                                            <Text style={[main.text, { fontSize: 12 }]}>Nama peminjam : {data.name}</Text>
                                             <Text style={[main.text, { fontSize: 12 }]}>Tanggal pinjam : {data.tanggal_pinjam}</Text>
                                             <Text style={[main.text, { fontSize: 12 }]}>Status : {data.peminjam_nik != '-' ? 'Disetujui' : 'Pending'}</Text>
                                             <Text style={[main.text, { fontSize: 12 }]}>{data.tahun_terbit}</Text>
-                                        </View>
+                                        </View>}
+                                       
                                         <View style={{
                                             flexDirection: "row", 
                                             marginTop:30,

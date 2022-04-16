@@ -115,14 +115,14 @@ export class Login extends Component {
           style={main.buttonBorder}>
           {<Text style={[{ color: '#fff', fontSize: 18 }]} >Login</Text>}
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={1}
           onPress={() => { 
             this.props.navigation.navigate('Register');  
           }}
           style={[{ marginTop:0 },main.buttonBorderReverse]}>
           {<Text style={[{ color: '#00a8ff', fontSize: 18 }]} >Register</Text>}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     )
   }

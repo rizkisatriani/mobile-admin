@@ -6,12 +6,12 @@ import { BASE_URL } from '../constants/http.js';
 import { getData } from '../helpers/storage'
 
 const { height, width } = Dimensions.get('window');
-export default class DetilList extends Component {
+export default class DetilListAnggota extends Component {
     constructor(props) {
         super(props);
         this.state = {
             originBuku: [],
-            buku: [],
+            anggota: [],
             bukuPinjam: [],
             dataPeminjam: []
         };
@@ -23,7 +23,7 @@ export default class DetilList extends Component {
         console.log(this.props.route.params.type);
             axios({
                 method: "post",
-                url: BASE_URL + "/api/getByIdPinjam",
+                url: BASE_URL + "/api/AnggotaById",
                 data: { id: this.props.route.params.id }
             }).then(async (res) => {
                 if (res.data.data.length == 0) {
@@ -38,9 +38,9 @@ export default class DetilList extends Component {
                         ]
                     );
                 } else {
-                    this.setState({ buku: res.data.data });
-                    console.log(res.data.peminjaman)
-                    this.setState({ dataPeminjam: res.data.peminjaman });
+                    this.setState({ anggota: res.data.data });
+                    console.log( res.data.data )
+                    // this.setState({ dataPeminjam: res.data.peminjaman });
                 }
             }).catch((e) => {
                 console.log(e);
@@ -52,13 +52,13 @@ export default class DetilList extends Component {
         getData('user').then((data_user) => {
         const URL = `${BASE_URL}/api/accMobile`;
         let FData = new FormData();
-        FData.append("id", this.state.dataPeminjam.id);
+        FData.append("id", this.state.anggota.id);
         FData.append("admin_id", data_user.id);
         FData.append("type", this.props.route.params.type);
         axios.post(URL, FData).then((response) => {
             Alert.alert(
                 "Informasi",
-                "Pengajuan telah berhasil di setujui.",
+                "Permintaan telah berhasil di setujui.",
                 [
                     {
                         text: "OK", onPress: () =>
@@ -129,9 +129,9 @@ export default class DetilList extends Component {
                         flex: 2,
                         color: '#fff',
                         padding: 15,
-                        fontSize: 24,
+                        fontSize: 18,
                         fontWeight: 'bold'
-                    }]}>Detil Pengajuan</Text>
+                    }]}>Detil Permintaan Keanggotaan</Text>
                     <View style={{
                         flexDirection: 'row',
                         width: width,
@@ -197,70 +197,27 @@ export default class DetilList extends Component {
                     width: width,
                     padding: 10,
                 }} > 
-                    <Text style={[main.text, { fontSize: 14, fontWeight: 'bold', paddingBottom: 15 }]}>
-                        {`Tanggal Peminjaman : ${this.state.dataPeminjam.tanggal_pinjam}`}</Text>
                     <View
                         style={{
                             borderBottomColor: '#7f8c8d',
                             borderBottomWidth: 1,
                             marginBottom: 15
                         }}
-                    />
-                    <TextInput
-                        style={[main.inputRounded, { width: width - 35 }]}
-                        placeholder="Cari Buku"
-                        onChangeText={text => {
-                            let buku = this.state.originBuku;
-                            console.log('cari', buku)
-                            if (text.length >= 0) {
-                                buku = buku.filter((buku) => buku.judul.includes(text));
-                                this.setState({ buku })
-                            }
-                        }}
-                        defaultValue={this.state.text}
-                    />
-                    <ScrollView>
-                        {this.state.buku.map((data, i) => {
-                            return (
-                                <TouchableOpacity
-                                    key={i}
-                                    style={{
-                                        backgroundColor: "#ecf0f1", margin: 10, height: 150, width: 370,
-                                        elevation: 3,
-                                        justifyContent: 'flex-start',
-                                        alignItems: 'flex-start',
-                                        flexDirection: 'column',
-                                        flex: 1,
-                                        borderRadius: 30,
-                                        flexDirection: "row",
-                                        flex: 1,
-                                        flexWrap: 'wrap'
-                                    }}
-                                    onPress={() => {
-                                      
-                                    }}>
-                                    <Image
-                                        style={main.buku}
-                                        source={{ uri: `${BASE_URL}/${data.cover_buku}` }}
-                                    />
-                                    <View style={{
-                                        flex: 1,
-                                        flexDirection: 'column',
-                                        borderBottomLeftRadius: 45,
-                                        borderBottomRightRadius: 45,
-                                        width: width,
-                                        height: height / 3,
-                                        padding: 10,
-                                    }}>
-                                        <Text style={[main.text, { fontSize: 14, fontWeight: 'bold' }]}>{data.judul}</Text>
-                                        <Text style={[main.text, { fontSize: 12 }]}>{data.nama_pengarang}</Text>
-                                        <Text style={[main.text, { fontSize: 12 }]}>{data.penerbit}</Text>
-                                        <Text style={[main.text, { fontSize: 12 }]}>{data.tahun_terbit}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        })}
-                    </ScrollView>
+                    />     
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        borderBottomLeftRadius: 45,
+                        borderBottomRightRadius: 45,
+                        width: width,
+                        height: height / 3,
+                        padding: 10,
+                    }}>
+                        <Text style={[main.text, { fontSize: 12 }]}>Nik Anggota: {this.state.anggota.nik}</Text>
+                        <Text style={[main.text, { fontSize: 12 }]}>Nama Anggota : {this.state.anggota.name}</Text>
+                        <Text style={[main.text, { fontSize: 12 }]}>Email : {this.state.anggota.email}</Text>
+                        <Text style={[main.text, { fontSize: 12 }]}>No. Hp : {this.state.anggota.no_hp }</Text> 
+                    </View>
                 </View>
             </View>
         );
