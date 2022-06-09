@@ -5,6 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faBook,faHistory,faCalendarPlus,faCalendarCheck,faPowerOff } from '@fortawesome/free-solid-svg-icons'
 import { getData,removeData } from '../helpers/storage'
 import { ScrollView } from 'react-native-gesture-handler';
+import { BASE_URL } from '../constants/http.js';
+import DocumentPicker from 'react-native-document-picker';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const { height, width } = Dimensions.get('window');
 
 export class MenuUtama extends Component {
@@ -14,9 +18,49 @@ export class MenuUtama extends Component {
             user: [], 
         };
     }
+    getFile = async () => {
+        try {
+          const res = await DocumentPicker.pick({
+            type: [DocumentPicker.types.images],
+          })   
+          const URL =BASE_URL + "/api/changeAvatar"; 
+    
+        let data = new FormData();
+        data.append('id', this.state.user.id);
+        data.append('avatar', res); 
+    
+        let config = {
+          header : {
+            'Content-Type' : 'image/png'
+          }
+        }
+    
+        axios.post(
+          URL, 
+          data,
+          config
+        ).then(
+          async(response) => {
+            let temp_user=this.state.user;
+            temp_user.avatar=response.data.url;
+            this.setState({user:temp_user})
+            await AsyncStorage.setItem("user",JSON.stringify(temp_user) )
+            console.log('image upload response > ', response.data)
+          }
+        )
+        }catch (err) {
+          if (DocumentPicker.isCancel(err)) {
+            // User cancelled the picker, exit any dialogs or menus and move on
+          } else {
+            throw err
+          }
+        }
+      }
     componentDidMount(){
         getData('user').then((user) => {
+            console.log(user);
             this.setState({user});
+            console.log(BASE_URL+this.state.user.avatar);
         })
 
     }
@@ -26,10 +70,15 @@ export class MenuUtama extends Component {
                 <StatusBar barStyle="dard-content" backgroundColor="#00a8ff" />
                 <View style={main.headerView}>
                     <View style={main.avatarContainer}>
+                    <TouchableOpacity  
+                        onPress={()=>{ 
+                            this.getFile()
+                        }}>
                         <Image
                             style={main.avatar}
-                            source={{ uri: 'https://www.inpixio.com/remove-background/images/main-before.jpg' }}
+                            source={{ uri: BASE_URL+this.state.user.avatar+"?time=" + new Date() }}
                         /> 
+                        </TouchableOpacity>
                         <Text style={[{
                             color: '#fff',
                             padding: 15,
@@ -89,6 +138,7 @@ export class MenuUtama extends Component {
                         flex: 1,
                         flexWrap: 'wrap',
                     }}>
+                    {this.state.user.level===2?
                     <TouchableOpacity style={{
                         backgroundColor: "#ecf0f1", margin: 10, height: 150, width: width / 2.3,
                         elevation: 3,
@@ -108,6 +158,8 @@ export class MenuUtama extends Component {
                             fontWeight: 'bold'
                         }]}>User Register</Text>
                     </TouchableOpacity>
+                    :null} 
+                    {this.state.user.level===2?
                     <TouchableOpacity style={{
                         backgroundColor: "#ecf0f1", margin: 10, height: 150, width: width / 2.3,
                         elevation: 3,
@@ -126,7 +178,9 @@ export class MenuUtama extends Component {
                             fontSize: 12,
                             fontWeight: 'bold'
                         }]}>Peminjaman Buku</Text>
-                    </TouchableOpacity>  
+                    </TouchableOpacity>   
+                    :null}  
+                    {this.state.user.level===2?
                     <TouchableOpacity style={{
                         backgroundColor: "#ecf0f1", margin: 10, height: 150, width: width / 2.3,
                         elevation: 3,
@@ -145,7 +199,9 @@ export class MenuUtama extends Component {
                             fontSize: 12,
                             fontWeight: 'bold'
                         }]}>Pengembalian Buku</Text>
-                    </TouchableOpacity>  
+                    </TouchableOpacity>   
+                      :null}   
+                    {this.state.user.level===2?
                     <TouchableOpacity style={{
                         backgroundColor: "#ecf0f1", margin: 10, height: 150, width: width / 2.3,
                         elevation: 3,
@@ -164,7 +220,8 @@ export class MenuUtama extends Component {
                             fontSize: 12,
                             fontWeight: 'bold'
                         }]}>Perpanjang Buku</Text>
-                    </TouchableOpacity>  
+                    </TouchableOpacity>   
+                      :null}   
                     <TouchableOpacity style={{
                         backgroundColor: "#ecf0f1", margin: 10, height: 150, width: width / 2.3,
                         elevation: 3,
@@ -173,7 +230,7 @@ export class MenuUtama extends Component {
                         borderRadius: 30
                     }}
                     onPress={() => {
-                        this.props.navigation.navigate('DetilList');
+                        this.props.navigation.navigate('Riwayat');
                     }}>
                         <FontAwesomeIcon icon={faHistory} color="#34495e" secondaryColor="#95a5a6" size={52} />
                         <Text style={[{

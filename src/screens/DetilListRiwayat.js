@@ -6,56 +6,52 @@ import { BASE_URL } from '../constants/http.js';
 import { getData } from '../helpers/storage'
 
 const { height, width } = Dimensions.get('window');
-export default class Riwayat extends Component {
+export default class DetilListRiwayat extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [],
+            originBuku: [],
             buku: [],
-            bukuPinjam: []
+            bukuPinjam: [],
+            dataPeminjam: []
         };
     }
     componentDidMount() {
-        this.getData();
+        this.getDataPinjam();
     }
-    getData = async () => {
-        getData('user').then((data) => {
-
-            const URL = `${BASE_URL}/api/getHistoryById`;
-            let FData = new FormData(); 
-            FData.append("nik", data.nik);
-            axios.post(URL, FData).then((response) => {
-                console.log(response.data.data);
-                this.setState({ data: response.data.data }); 
+    getDataPinjam = async () => { 
+        console.log(this.props.route.params.type);
+            axios({
+                method: "post",
+                url: BASE_URL + "/api/getByIdPinjam",
+                data: { id: this.props.route.params.id }
+            }).then(async (res) => {
+                if (res.data.data.length == 0) {
+                    Alert.alert(
+                        "Informasi",
+                        "Anda belum melakukan peminjaman.",
+                        [
+                            {
+                                text: "OK", onPress: () =>
+                                    this.props.navigation.navigate('MenuUtama')
+                            }
+                        ]
+                    );
+                } else {
+                    this.setState({ buku: res.data.data });
+                    console.log(res.data.peminjaman)
+                    this.setState({ dataPeminjam: res.data.peminjaman });
+                }
             }).catch((e) => {
                 console.log(e);
                 // Alert.alert("Informasi","Nik dan password yang anda masukan salah.");
-            })
-        })
-    };
- 
-    delete = (data) => {
-        const bukuPinjam = this.state.bukuPinjam;
-        bukuPinjam.push(data);
-        this.setState({ bukuPinjam });
-        let buku = [...this.state.buku];
-        const index = buku.findIndex((bukuD) => {
-            return bukuD.judul == data.judul;
-        })
-        buku.splice(index, 1);
-        this.setState({ buku: buku });
-        let originbuku = [...this.state.originBuku];
-        const indexOrigin = originbuku.findIndex((bukuO) => {
-            return bukuO.judul == data.judul;
-        })
-        originbuku.splice(indexOrigin, 1);
-        this.setState({ originBuku: originbuku });
-    }
+            }) 
+    };   
     render() {
         return (
             <View style={[main.container, { backgroundColor: "#fff", justifyContent: 'flex-start', }]}>
                 <View style={{
-                    flexDirection: 'row',
+                    flexDirection: 'column',
                     backgroundColor: "#00a8ff",
                     borderBottomLeftRadius: 25,
                     borderBottomRightRadius: 25,
@@ -64,12 +60,12 @@ export default class Riwayat extends Component {
                     padding: 10,
                 }} >
                     <Text style={[{
-                        flex: 3,
+                        flex: 2,
                         color: '#fff',
                         padding: 15,
                         fontSize: 24,
                         fontWeight: 'bold'
-                    }]}>Riwayat</Text> 
+                    }]}>Detil Peminjaman</Text> 
                 </View>
                 <View style={{
                     flex: 8,
@@ -79,8 +75,8 @@ export default class Riwayat extends Component {
                     borderBottomRightRadius: 45,
                     width: width,
                     padding: 10,
-                }} >
-                    {/* <TextInput
+                }} >  
+                    <TextInput
                         style={[main.inputRounded, { width: width - 35 }]}
                         placeholder="Cari Buku"
                         onChangeText={text => {
@@ -92,29 +88,31 @@ export default class Riwayat extends Component {
                             }
                         }}
                         defaultValue={this.state.text}
-                    /> */}
+                    />
                     <ScrollView>
-                        {this.state.data.map((data, i) => {
+                        {this.state.buku.map((data, i) => {
                             return (
                                 <TouchableOpacity
                                     key={i}
                                     style={{
-                                        backgroundColor: "#ecf0f1", margin: 10, 
-                                        height: 130, 
-                                        width: 370,
+                                        backgroundColor: "#ecf0f1", margin: 10, height: 150, width: 370,
                                         elevation: 3,
                                         justifyContent: 'flex-start',
                                         alignItems: 'flex-start',
                                         flexDirection: 'column',
                                         flex: 1,
-                                        borderRadius:10,
+                                        borderRadius: 30,
                                         flexDirection: "row",
                                         flex: 1,
                                         flexWrap: 'wrap'
                                     }}
-                                    onPress={() => {  
-                                        this.props.navigation.navigate('DetilListRiwayat', { id: data.id });
-                                    }}> 
+                                    onPress={() => {
+                                      
+                                    }}>
+                                    <Image
+                                        style={main.buku}
+                                        source={{ uri: `${BASE_URL}/${data.cover_buku}` }}
+                                    />
                                     <View style={{
                                         flex: 1,
                                         flexDirection: 'column',
@@ -124,10 +122,9 @@ export default class Riwayat extends Component {
                                         height: height / 3,
                                         padding: 10,
                                     }}>
-                                        <Text style={[main.text, { fontSize: 18, fontWeight: 'bold' }]}>No Peminjaman : {data.id}</Text>
-                                        <Text style={[main.text, { fontSize: 12 }]}>Tanggal pinjam : {data.tanggal_pinjam}</Text>
-                                        <Text style={[main.text, { fontSize: 12 }]}>Tanggal Pengembalian : {data.tanggal_kembali??'-'}</Text>
-                                        <Text style={[main.text, { fontSize: 12 }]}>Status : {data.peminjam_nik!='-'?data.tanggal_kembali?'Telah dikembalikan':'Dalam peminjaman':'Pending'}</Text>
+                                        <Text style={[main.text, { fontSize: 14, fontWeight: 'bold' }]}>{data.judul}</Text>
+                                        <Text style={[main.text, { fontSize: 12 }]}>{data.nama_pengarang}</Text>
+                                        <Text style={[main.text, { fontSize: 12 }]}>{data.penerbit}</Text>
                                         <Text style={[main.text, { fontSize: 12 }]}>{data.tahun_terbit}</Text>
                                     </View>
                                 </TouchableOpacity>

@@ -13,54 +13,7 @@ export class Login extends Component {
     nik: '',
     pass: ''
   };
-  getFile = async () => {
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.pdf],
-      }) 
-      console.log(
-        'res.uri2',
-        {
-          uri: res.uri,
-          type: res.type,
-          name: res.name,
-        }
-      )
-      var formData = new FormData();
-      formData.append("file", {
-        uri: res.uri,
-        type: res.type,
-        name: res.name,
-      });
-      const URL = 'http://192.168.43.219:443/api/addBuku'; 
-
-    let data = new FormData();
-    data.append('name', 'my-picture');
-    data.append('cover', res); 
-
-    let config = {
-      header : {
-        'Content-Type' : 'image/png'
-      }
-    }
-
-    axios.post(
-      URL, 
-      data,
-      config
-    ).then(
-      response => {
-        console.log('image upload response > ', response)
-      }
-    )
-    }catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        // User cancelled the picker, exit any dialogs or menus and move on
-      } else {
-        throw err
-      }
-    }
-  }
+  
   componentDidMount(){
     getData('user').then((data) => {
       if(data){

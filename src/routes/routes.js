@@ -9,6 +9,7 @@ import DetilList from '../screens/DetilList.js';
 import DetilListAnggota from '../screens/DetilListAnggota.js';
 import ListRequest from '../screens/ListRequest.js';
 import Pengembalian from '../screens/Pengembalian.js';
+import DetilListRiwayat from '../screens/DetilListRiwayat.js';
 import Splash from '../screens/Splash.js';
 
 
@@ -27,6 +28,7 @@ export default function MyStack() {
         <Stack.Screen options={{ headerShown: false }} name="PeminjamanBuku" component={PeminjamanBuku} />
         <Stack.Screen options={{ headerShown: false }} name="ListRequest" component={ListRequest} />
         <Stack.Screen options={{ headerShown: false }} name="Pengembalian" component={Pengembalian} />
+        <Stack.Screen options={{ headerShown: false }} name="DetilListRiwayat" component={DetilListRiwayat} />
     </Stack.Navigator>
     );
   }

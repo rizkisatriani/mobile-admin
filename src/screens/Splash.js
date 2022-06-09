@@ -6,8 +6,7 @@ import { getData } from '../helpers/storage'
 import { BASE_URL } from '../constants/http.js';
 
 export class Splash extends Component {
-    componentDidMount(){  
-        console.log(BASE_URL + "/perpusggf.png");
+    componentDidMount(){   
         setTimeout(()=>{   
             getData('user').then((data) => {
                 if(data){
