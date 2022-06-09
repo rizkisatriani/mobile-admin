@@ -19,10 +19,14 @@ export default class PeminjamanBuku extends Component {
         this.getbuku();
     }
     getbuku = async () => {
+        getData('user').then((data_user) => {
+            console.log(data_user.id);
         axios({
-            method: "get",
+            method: "post",
             url: BASE_URL + "/api/getMobile",
+            data: { user_id: data_user.id }
         }).then(async (res) => {
+            console.log(res.data);
             if(res.data.status==1){
                 Alert.alert(
                     "Informasi",
@@ -39,6 +43,7 @@ export default class PeminjamanBuku extends Component {
             console.log(e);
             // Alert.alert("Informasi","Nik dan password yang anda masukan salah.");
         })
+    })
     };
     
     simpan=()=> {   

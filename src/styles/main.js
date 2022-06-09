@@ -57,10 +57,7 @@ export default StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.5,
     shadowRadius: 2,  
-    elevation: 3, 
-    flexDirection: "row",
-    flex: 1,
-    flexWrap: 'wrap'
+    elevation: 3,  
   },
   avatarContainer: {  
     flexDirection: "row",

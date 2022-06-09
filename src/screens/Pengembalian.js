@@ -6,7 +6,7 @@ import { BASE_URL } from '../constants/http.js';
 import { getData } from '../helpers/storage'
 
 const { height, width } = Dimensions.get('window');
-export default class DetilList extends Component {
+export default class Pengembalian extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,14 +17,15 @@ export default class DetilList extends Component {
         };
     }
     componentDidMount() {
-        this.getDataPinjam();
+        this.getbuku();
     }
-    getDataPinjam = async () => { 
-        console.log(this.props.route.params.type);
+    getbuku = async () => {
+        getData('user').then((data_user) => {
+            console.log(data_user.nik);
             axios({
                 method: "post",
-                url: BASE_URL + "/api/getByIdPinjam",
-                data: { id: this.props.route.params.id }
+                url: BASE_URL + "/api/getById",
+                data: { nik: data_user.nik }
             }).then(async (res) => {
                 if (res.data.data.length == 0) {
                     Alert.alert(
@@ -45,20 +46,18 @@ export default class DetilList extends Component {
             }).catch((e) => {
                 console.log(e);
                 // Alert.alert("Informasi","Nik dan password yang anda masukan salah.");
-            }) 
+            })
+        })
     };
 
-    ACC = () => { 
-        getData('user').then((data_user) => {
-        const URL = `${BASE_URL}/api/accMobile`;
+    kembalikan = () => {
+        const URL = `${BASE_URL}/api/Requestpengembalian`;
         let FData = new FormData();
         FData.append("id", this.state.dataPeminjam.id);
-        FData.append("admin_id", data_user.id);
-        FData.append("type", this.props.route.params.type);
         axios.post(URL, FData).then((response) => {
             Alert.alert(
                 "Informasi",
-                "Pengajuan telah berhasil di setujui.",
+                "Pengajuan pengembalian Berhasil.",
                 [
                     {
                         text: "OK", onPress: () =>
@@ -69,20 +68,16 @@ export default class DetilList extends Component {
         }).catch((e) => {
             console.log('sukses', e)
         });
-    })
 
-    } 
-    Tolak = () => { 
-        getData('user').then((data_user) => {
-        const URL = `${BASE_URL}/api/TolakMobile`;
+    }
+    perpanjang = () => {
+        const URL = `${BASE_URL}/api/Requestperpanjang`;
         let FData = new FormData();
         FData.append("id", this.state.dataPeminjam.id);
-        FData.append("admin_id", data_user.id);
-        FData.append("type", this.props.route.params.type);
         axios.post(URL, FData).then((response) => {
             Alert.alert(
                 "Informasi",
-                "Pengajuan telah berhasil di tolak.",
+                "Pengajuan pengembalian Berhasil.",
                 [
                     {
                         text: "OK", onPress: () =>
@@ -93,9 +88,8 @@ export default class DetilList extends Component {
         }).catch((e) => {
             console.log('sukses', e)
         });
-    })
 
-    } 
+    }
     delete = (data) => {
         const bukuPinjam = this.state.bukuPinjam;
         bukuPinjam.push(data);
@@ -122,7 +116,7 @@ export default class DetilList extends Component {
                     borderBottomLeftRadius: 25,
                     borderBottomRightRadius: 25,
                     width: width,
-                    height: 160,
+                    height: 150,
                     padding: 10,
                 }} >
                     <Text style={[{
@@ -131,7 +125,7 @@ export default class DetilList extends Component {
                         padding: 15,
                         fontSize: 24,
                         fontWeight: 'bold'
-                    }]}>Detil Pengajuan</Text>
+                    }]}>Pengembalian</Text>
                     <View style={{
                         flexDirection: 'row',
                         width: width,
@@ -140,7 +134,7 @@ export default class DetilList extends Component {
                     }}>
                         <TouchableOpacity
                             onPress={() => {
-                                this.ACC()
+                                this.kembalikan()
                             }}
                             style={{
                                 flex: 2,
@@ -160,11 +154,11 @@ export default class DetilList extends Component {
                                 padding: 15,
                                 fontSize: 14,
                                 fontWeight: 'bold'
-                            }]}>Setujui</Text>
+                            }]}>Kembalikan</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                this.Tolak()
+                                this.perpanjang()
                             }}
                             style={{
                                 flex: 1,
@@ -184,7 +178,7 @@ export default class DetilList extends Component {
                                 padding: 15,
                                 fontSize: 14,
                                 fontWeight: 'bold'
-                            }]}>Tolak</Text>
+                            }]}>Perpanjang</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -196,7 +190,9 @@ export default class DetilList extends Component {
                     borderBottomRightRadius: 45,
                     width: width,
                     padding: 10,
-                }} > 
+                }} >
+                    <Text style={[main.text, { fontSize: 14, fontWeight: 'bold' }]}>{`Status : ${this.state.dataPeminjam.peminjam_name != '-' ? 'Disetujui' :
+                        'Menunggu Acc'}`}</Text>
                     <Text style={[main.text, { fontSize: 14, fontWeight: 'bold', paddingBottom: 15 }]}>
                         {`Tanggal Peminjaman : ${this.state.dataPeminjam.tanggal_pinjam}`}</Text>
                     <View
@@ -237,7 +233,23 @@ export default class DetilList extends Component {
                                         flexWrap: 'wrap'
                                     }}
                                     onPress={() => {
-                                      
+                                        Alert.alert(
+                                            "Tambahkan buku",
+                                            `Anda akan menambahakan buku ${data.judul} untuk dipinjam`,
+                                            [
+                                                {
+                                                    text: "Iya",
+                                                    onPress: () => {
+                                                        this.delete(data);
+                                                    }
+                                                },
+                                                {
+                                                    text: "Tidak",
+                                                    onPress: () => {
+                                                    }
+                                                }
+                                            ]
+                                        );
                                     }}>
                                     <Image
                                         style={main.buku}
