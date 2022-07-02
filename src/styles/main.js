@@ -87,5 +87,11 @@ export default StyleSheet.create({
     color: '#2c3e50', 
     paddingTop: 5,
     fontSize: 12,
-  }
+  },
+  inputPass: { 
+    backgroundColor:"#ecf0f1", 
+    width: width / 1.2,
+    margin: 8,
+    padding: 0, 
+  }, 
 });

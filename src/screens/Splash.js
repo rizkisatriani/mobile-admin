@@ -8,13 +8,19 @@ import { BASE_URL } from '../constants/http.js';
 export class Splash extends Component {
     componentDidMount(){   
         setTimeout(()=>{   
-            getData('user').then((data) => {
-                if(data){
-                  this.props.navigation.replace('MenuUtama'); 
-                }  else{ 
-                    this.props.navigation.replace('Login');
-                }
-              })
+          getData('setuju').then((data) => {
+            if(!data){
+              this.props.navigation.replace('Perjanjian');
+            }else{
+              getData('user').then((data) => {
+                  if(data){
+                    this.props.navigation.replace('MenuUtama'); 
+                  }  else {
+                    this.props.navigation.replace('Login'); 
+                  } 
+                })
+            }
+            })
         }, 3000);  
        }  
 

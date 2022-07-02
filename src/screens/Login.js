@@ -7,11 +7,14 @@ import axios from 'axios';
 import { BASE_URL } from  '../constants/http.js';
 import { getData } from '../helpers/storage'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Eye from '../../assets/Eye.svg'
+import EyeSlash from '../../assets/EyeSlash.svg'
 
 export class Login extends Component {
   state = {
     nik: '',
-    pass: ''
+    pass: '',
+    securePass:true
   };
   
   componentDidMount(){
@@ -53,13 +56,26 @@ export class Login extends Component {
           onChangeText={nik => this.setState({ nik: nik })}
           defaultValue={this.state.nik}
         />
+        <View style={[main.inputRounded,{margin:0,padding:0,paddingLeft:10, paddingRight:10 ,flexDirection:'row',alignItems:'center'}]}>
         <TextInput
-          style={main.inputRounded}
+          style={[main.inputPass,{flexDirection:'row',flex:1}]}
           placeholder="Password"
           onChangeText={pass => this.setState({ pass: pass })}
-          secureTextEntry={true}
+          secureTextEntry={this.state.securePass}
           defaultValue={this.state.pass}
         />
+        <TouchableOpacity
+        onPress={() => {
+            let bool=this.state.securePass?false:true;
+            this.setState({securePass: bool});
+        }}>
+        {this.state.securePass?
+        <EyeSlash   style={[{flexDirection:'row',flex:1 }]}/>
+        : 
+        <Eye   style={[{flexDirection:'row',flex:1 }]}/>
+        }
+        </TouchableOpacity>
+        </View>
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => { 

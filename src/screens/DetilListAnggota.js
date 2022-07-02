@@ -76,7 +76,7 @@ export default class DetilListAnggota extends Component {
         getData('user').then((data_user) => {
         const URL = `${BASE_URL}/api/TolakMobile`;
         let FData = new FormData();
-        FData.append("id", this.state.dataPeminjam.id);
+        FData.append("id", this.state.anggota.id);
         FData.append("admin_id", data_user.id);
         FData.append("type", this.props.route.params.type);
         axios.post(URL, FData).then((response) => {

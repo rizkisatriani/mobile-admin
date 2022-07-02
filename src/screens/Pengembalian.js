@@ -13,7 +13,8 @@ export default class Pengembalian extends Component {
             originBuku: [],
             buku: [],
             bukuPinjam: [],
-            dataPeminjam: []
+            dataPeminjam: [],
+            denda: 0
         };
     }
     componentDidMount() {
@@ -42,6 +43,7 @@ export default class Pengembalian extends Component {
                     this.setState({ buku: res.data.data });
                     console.log(res.data.peminjaman)
                     this.setState({ dataPeminjam: res.data.peminjaman });
+                    this.setState({ denda: res.data.denda });
                 }
             }).catch((e) => {
                 console.log(e);
@@ -195,6 +197,8 @@ export default class Pengembalian extends Component {
                         'Menunggu Acc'}`}</Text>
                     <Text style={[main.text, { fontSize: 14, fontWeight: 'bold', paddingBottom: 15 }]}>
                         {`Tanggal Peminjaman : ${this.state.dataPeminjam.tanggal_pinjam}`}</Text>
+                    <Text style={[main.text, { fontSize: 14, fontWeight: 'bold', paddingBottom: 15 }]}>
+                        {`Denda : Rp ${this.state.denda.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`}</Text>
                     <View
                         style={{
                             borderBottomColor: '#7f8c8d',
