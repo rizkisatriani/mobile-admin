@@ -279,6 +279,25 @@ export class MenuUtama extends Component {
                             fontWeight: 'bold'
                         }]}>Kembalikan Buku</Text>
                     </TouchableOpacity> 
+                    <TouchableOpacity style={{
+                        backgroundColor: "#ecf0f1", margin: 10, height: 150, width: width / 2.3,
+                        elevation: 3,
+                        justifyContent: 'flex-end',
+                        alignItems: 'center',
+                        borderRadius: 30
+                    }}
+                    onPress={() => {
+                        this.props.navigation.navigate('RequestBuku');
+                    }}>
+                        <FontAwesomeIcon icon={faHistory} color="#34495e" secondaryColor="#95a5a6" size={52} />
+                        <Text style={[{
+                            color: '#2c3e50',
+                            paddingBottom: 15,
+                            paddingTop: 15,
+                            fontSize: 12,
+                            fontWeight: 'bold'
+                        }]}>Request buku</Text>
+                    </TouchableOpacity>  
                     </View>
                      </ScrollView>
                 </View>
